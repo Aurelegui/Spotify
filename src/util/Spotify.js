@@ -1,7 +1,7 @@
 // Put in a function if you dont want to 
 const clientId = 'f7e93f7e59014ade97b7871349ba4a97';
 
-const redirectUri = 'http://my-first-app-react.surge.sh/';
+const redirectUri = 'https://spotify-appp.netlify.app/';
 
 let accessToken;
 const Spotify = {
@@ -49,7 +49,7 @@ const Spotify = {
             return jsonResponse.tracks.items.map(track => ({
                 id: track.id,
                 name: track.name,
-                artist: track.artits[0].name,
+                artist: track.artists[0].name,
                 album: track.album.name,
                 uri: track.uri
             }));
