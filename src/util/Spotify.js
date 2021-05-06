@@ -1,5 +1,5 @@
 // Put in a function if you dont want to 
-const clientId = 'f7e93f7e59014ade97b7871349ba4a97';
+const clientId = '';
 
 const redirectUri = 'https://spotify-appp.netlify.app/';
 
