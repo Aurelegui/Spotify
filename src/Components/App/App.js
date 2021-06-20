@@ -35,7 +35,7 @@ export default function App() {
   };
 
   const updatePlaylistName = (name) => {
-    setPlaylist({ playlistName: name });
+    setPlaylist({ ...playlist, playlistName: name });
   };
 
   const search = async (term) => {
@@ -48,7 +48,7 @@ export default function App() {
   const savePlaylist = () => {
     const trackUris = playlist.playlistTracks.map((track) => track.uri);
 
-    Spotify.savePlaylist(setPlaylist, trackUris).then(() => {
+    Spotify.savePlaylist(playlist.playlistName, trackUris).then(() => {
       setPlaylist({ ...playlist, playlistName: "New Playlist" });
     });
   };
