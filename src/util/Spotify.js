@@ -1,7 +1,9 @@
-// Put in a function if you dont want to 
-const clientId = '';
+// Put in a function if you dont want to
+import axios from "axios";
 
-const redirectUri = 'https://spotify-appp.netlify.app/';
+const clientId = '3e5cd6c1db2a49a4866306cc374537ab';
+
+const redirectUri = 'http://localhost:3000/';
 
 let accessToken;
 const Spotify = {
@@ -29,10 +31,43 @@ const Spotify = {
     },
 
     // Return all matches of tracks from search use
-    search(term) {
-        //get token from Spotify method
+    async search(term) {
         const accessToken = Spotify.getAccessToken();
-        return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+
+        const response = await axios.get(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        console.log(response)
+
+        if (response.status !== 200) {
+            return []
+        }
+
+        return response.data.tracks.items.map(track => ({
+            id: track.id,
+            name: track.name,
+            artist: track.artists[0].name,
+            album: track.album.name,
+            uri: track.uri
+        }));
+
+    },
+
+
+
+
+
+
+
+
+
+
+
+        //get token from Spotify method
+       /* return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -42,6 +77,7 @@ const Spotify = {
             // Check response
         }).then(jsonResponse => {
             // if no tracks exist returns empty array
+
             if (!jsonResponse.tracks) {
                 return [];
             }
@@ -54,7 +90,7 @@ const Spotify = {
                 uri: track.uri
             }));
         });
-    },
+    }*/
 
     savePlaylist(name, trackUris) {
         if (!name || !trackUris.length) {
@@ -64,7 +100,7 @@ const Spotify = {
         const headers = { Authorization: `Bearer ${accessToken}` };
         let userId;
 
-        return fetch('https://api.spotify.com/v1/me', { headers: headers }
+        return fetch('https://api.spotify.com/v1/', { headers: headers }
         ).then(response => response.json()
         ).then(jsonResponse => {
             userId = jsonResponse.id;

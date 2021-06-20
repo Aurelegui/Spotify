@@ -1,41 +1,37 @@
-import React from 'react';
-import './Track.css';
+import React from "react";
+import "./Track.css";
 
-export default function Track(props) {
+export default function Track({ track, isRemoval, onRemove, onAdd }) {
+  const addTrack = () => {
+    onAdd(track);
+  };
 
-    // Render "-" or "+" according to isRemoval
-    const renderAction = () => {
-        if (props.isRemoval) {
-            return (
-                <button className="Track-action" onClick={removeTrack}>-</button>
-            )
-        } else {
-            return (
-                <button className="Track-action" onClick={addTrack}>+</button>
-            )
-        }
+  const removeTrack = () => {
+    onRemove(track);
+  };
+
+  const renderAction = () => {
+    if (isRemoval) {
+      return (
+        <button type="button" className="Track-action" onClick={removeTrack}>
+          -
+        </button>
+      );
     }
-
-    const addTrack = () => {
-        props.onAdd(props.track);
-    }
-
-    const removeTrack = () => {
-        props.onRemove(props.track);
-    }
-
-
     return (
-        <div className="Track">
-            <div className="Track-information">
-                <h3>
-                    {props.track.name}
-                </h3>
-                <p>
-                    {props.track.artist} | {props.track.album}
-                </p>
-            </div>
-            {renderAction}
-        </div>
-    )
+      <button type="button" className="Track-action" onClick={addTrack}>
+        +
+      </button>
+    );
+  };
+
+  return (
+    <div className="Track">
+      <div className="Track-information">
+        <h3>{track.name}</h3>
+        <p>{track.artist || track.album}</p>
+      </div>
+      {renderAction()}
+    </div>
+  );
 }
