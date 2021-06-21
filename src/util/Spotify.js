@@ -33,19 +33,19 @@ const Spotify = {
     // Return all matches of tracks from search use
     async search(term) {
         const accessToken = Spotify.getAccessToken();
-
+        // axios uses async await
         const response = await axios.get(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         });
 
-        console.log(response)
+        console.log(response);
 
         if (response.status !== 200) {
             return []
         }
-
+        // use data with axios
         return response.data.tracks.items.map(track => ({
             id: track.id,
             name: track.name,
@@ -56,70 +56,79 @@ const Spotify = {
 
     },
 
+    //get token from Spotify method
+    /* return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+         headers: {
+             Authorization: `Bearer ${accessToken}`
+         }
+     }).then(response => {
+         // convert to json
+         return response.json();
+         // Check response
+     }).then(jsonResponse => {
+         // if no tracks exist returns empty array
 
+         if (!jsonResponse.tracks) {
+             return [];
+         }
+         // else it returns all tracks with id, name, artist, album and uri
+         return jsonResponse.tracks.items.map(track => ({
+             id: track.id,
+             name: track.name,
+             artist: track.artists[0].name,
+             album: track.album.name,
+             uri: track.uri
+         }));
+     });
+ }*/
 
-
-
-
-
-
-
-
-
-        //get token from Spotify method
-       /* return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        }).then(response => {
-            // convert to json
-            return response.json();
-            // Check response
-        }).then(jsonResponse => {
-            // if no tracks exist returns empty array
-
-            if (!jsonResponse.tracks) {
-                return [];
-            }
-            // else it returns all tracks with id, name, artist, album and uri
-            return jsonResponse.tracks.items.map(track => ({
-                id: track.id,
-                name: track.name,
-                artist: track.artists[0].name,
-                album: track.album.name,
-                uri: track.uri
-            }));
-        });
-    }*/
-
-    savePlaylist(name, trackUris) {
+    async savePlaylist(name, trackUris) {
         if (!name || !trackUris.length) {
             return;
         }
         const accessToken = Spotify.getAccessToken();
         const headers = { Authorization: `Bearer ${accessToken}` };
         let userId;
-
-        return fetch('https://api.spotify.com/v1/me', { headers: headers }
-        ).then(response => response.json()
-        ).then(jsonResponse => {
-            userId = jsonResponse.id;
-            return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`,
+        // AXIOS POST
+        return await axios.get('https://api.spotify.com/v1/me', { headers: headers }
+        ).then(responseMe => {
+            userId = responseMe.data.id;
+            axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,
                 {
                     headers: headers,
-                    method: 'POST',
                     body: JSON.stringify({ name: name })
-                }).then(response => response.json()
-                ).then(jsonResponse => {
-                    const playlistId = jsonResponse.id;
-                    return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
-                        {
-                            headers: headers,
-                            method: 'POST',
-                            body: JSON.stringify({ uris: trackUris })
-                        });
-                });
+                }
+            ).then(responseUser => {
+                const playlistId = responseUser.data.id;
+                axios.post(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
+                    {
+                        headers: headers,
+                        body: JSON.stringify({ uris: trackUris })
+                    });
+            })
         });
+
+        // old fetch
+        // return fetch('https://api.spotify.com/v1/me', { headers: headers }
+        // ).then(response => response.json()
+        // ).then(jsonResponse => {
+        //     userId = jsonResponse.id;
+        //     return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`,
+        //         {
+        //             headers: headers,
+        //             method: 'POST',
+        //             body: JSON.stringify({ name: name })
+        //         }).then(response => response.json()
+        //         ).then(jsonResponse => {
+        //             const playlistId = jsonResponse.id;
+        //             return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
+        //                 {
+        //                     headers: headers,
+        //                     method: 'POST',
+        //                     body: JSON.stringify({ uris: trackUris })
+        //                 });
+        //         });
+        // });
     }
 };
 

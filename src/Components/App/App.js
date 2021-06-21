@@ -63,7 +63,9 @@ export default function App() {
       <div className="App">
         <SearchBar onSearch={search} />
         <div className="App-playlist">
-          <SearchResults searchResults={searchResults} onAdd={addTrack} />
+          <SearchResults
+            searchResults={searchResults}
+            onAdd={addTrack} />
           <Playlist
             playlistName={playlist.playlistName}
             playlistTracks={playlist.playlistTracks}
