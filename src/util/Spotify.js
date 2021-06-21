@@ -90,23 +90,27 @@ const Spotify = {
         const headers = { Authorization: `Bearer ${accessToken}` };
         let userId;
         // AXIOS POST
-        return await axios.get('https://api.spotify.com/v1/me', { headers: headers }
+        return (await axios.get('https://api.spotify.com/v1/me', { headers: headers }
         ).then(responseMe => {
             userId = responseMe.data.id;
-            axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,
+            console.log(userId);
+            return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`,
                 {
                     headers: headers,
+                    method: 'POST',
                     body: JSON.stringify({ name: name })
                 }
-            ).then(responseUser => {
-                const playlistId = responseUser.data.id;
-                axios.post(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
+            ).then(response => response.json()
+            ).then(jsonResponse => {
+                const playlistId = jsonResponse.id;
+                return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
                     {
                         headers: headers,
+                        method: 'POST',
                         body: JSON.stringify({ uris: trackUris })
                     });
             })
-        });
+        }));
 
         // old fetch
         // return fetch('https://api.spotify.com/v1/me', { headers: headers }
