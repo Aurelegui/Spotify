@@ -1,3 +1,13 @@
+How to use: 
+
+- Login with your account on https://developer.spotify.com/dashboard/login
+- Create App 
+- Edit Settings:
+- Add redirect URIs : 
+- http://localhost:3000/
+- http://localhost:3000/callback
+- Add your Client ID in src/util/Spotify.js line 4 -> const clientId = 'YOUR CLIENT ID'
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
